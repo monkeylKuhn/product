@@ -10,20 +10,13 @@ spring:
     url: jdbc:mysql://localhost:3306/product?useUnicode=true&characterEncoding=utf8
     username: root
     password: root
-  
-  
-#    username: leading
-#    password: leading2019
-#    url: jdbc:mysql://101.200.37.80:8004/Cafe?useUnicode=true&characterEncoding=utf-8
-   
-   
     initialSize: 5
     minIdle: 5
     maxActive: 20
     maxWait: 60000
     timeBetweenEvictionRunsMillis: 60000
     minEvictableIdleTimeMillis: 300000
-    validationQuery: SELECT1FROMDUAL
+    validationQuery: SELECT 1 FROM DUAL
     testWhileIdle: true
     testOnBorrow: false
     testOnReturn: false

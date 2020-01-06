@@ -1,9 +1,13 @@
 package com.simple.productInfo.model;
 
+import java.util.Date;
+
 import lombok.Data;
 
 @Data
 public class DressSkuSize {
+	
+	private String spuId;
 	
 	private String size;
 	
@@ -13,6 +17,5 @@ public class DressSkuSize {
 	
 	private String price;
 	
-	private String product;
-	
+	private Date createTime;
 }

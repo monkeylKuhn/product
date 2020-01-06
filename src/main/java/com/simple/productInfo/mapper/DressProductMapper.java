@@ -1,9 +1,9 @@
  package com.simple.productInfo.mapper;
 
-import java.util.List;
-
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.simple.productInfo.model.DressProduct;
 
@@ -25,10 +25,24 @@ public interface DressProductMapper {
      int insertProduct(DressProduct list);
 
      @Select({
-//         "select count(1) from DressProduct where  productID = '123'"
-         
-         "UPDATE  DressProduct SET sku = '123' where productID = '123'"
+       "SELECT COUNT(1) FROM DressProduct WHERE productID = #{productId}"
      })
-    Integer select();
+    Integer count(String productId);
      
+     
+     @Update({
+       "UPDATE  DressProduct SET sku = '123' WHERE productID = #{productID}"
+     })
+     Integer updateByProductID(DressProduct dressProduct);     
+     
+     @Insert({
+         "<script>",
+         "INSERT INTO DressProduct(productID,clientProductID,spu,sku,brand,name,description,genre,type,",
+         "category,season,isCarryOver,color,retailPrice,price,pricesIncludeVat,productLastUpdated,photos)  ",
+         "values(#{productID},#{clientProductID},#{spu},#{sku},#{brand},#{name},#{description},#{genre},#{type},",
+         "#{category},#{season},#{isCarryOver},#{color},#{retailPrice},#{price},#{pricesIncludeVat},#{productLastUpdated},#{photos})",
+         "</script>"
+     })
+     @Options(useGeneratedKeys = true, keyProperty = "id")
+     int insert(DressProduct dressProduct);
 }

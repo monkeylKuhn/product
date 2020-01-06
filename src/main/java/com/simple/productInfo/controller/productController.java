@@ -1,12 +1,13 @@
  package com.simple.productInfo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simple.productInfo.mapper.DressProductMapper;
 import com.simple.productInfo.model.DressProduct;
+import com.simple.productInfo.task.TestTask;
 
 @RestController
 @RequestMapping("/query")
@@ -15,10 +16,13 @@ import com.simple.productInfo.model.DressProduct;
     @Autowired
     private DressProductMapper dressProductMapper;
     
+    @Autowired
+    TestTask testTask;
+    
 //    @Autowired
 //    private RoleMapper roleMapper;
     
-    @PostMapping("/")
+    @GetMapping("/")
     public Object queryById(){
         
 //        String url = "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/products?channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
@@ -43,8 +47,8 @@ import com.simple.productInfo.model.DressProduct;
 //        }
         
 //        List<DressProduct> dressProductList = new ArrayList<DressProduct>();
-        DressProduct d1 = new DressProduct();
-        d1.setProductID("123");
+//        DressProduct d1 = new DressProduct();
+//        d1.setProductID("123");
 //        dressProductList.add(d1);
 //        DressProduct d2 = new DressProduct();
 //        dressProductList.add(d2);
@@ -57,12 +61,12 @@ import com.simple.productInfo.model.DressProduct;
 //        d4.setProductID("123456");
 //        System.out.println(d1);
 ////        int num = 
-            int insertProduct = dressProductMapper.insertProduct(d1);
-        System.out.println(insertProduct);
+//            int insertProduct = dressProductMapper.insertProduct(d1);
+//        System.out.println(insertProduct);
 //        System.out.println(dressProductList);
        // System.out.println(dressProductMapper.select());
 //        System.out.println(roleMapper.insert());
-   
+    	testTask.fetchProduct();
         return true;
     }
     

@@ -44,6 +44,13 @@ public class DressProduct {
 	private List<DressSkuSize> sizes;
 	
 	private List<String> photos;
+	public String getPhotos(){
+		StringBuffer sb = new StringBuffer();
+		for (String string : photos) {
+			sb.append(string).append("^");
+		}
+		return sb.toString();
+	}
 		
 	private Long id;
 }
