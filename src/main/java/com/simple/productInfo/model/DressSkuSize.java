@@ -13,4 +13,6 @@ public class DressSkuSize {
 	
 	private String price;
 	
+	private String product;
+	
 }

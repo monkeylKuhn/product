@@ -45,4 +45,5 @@ public class DressProduct {
 	
 	private List<String> photos;
 		
+	private Long id;
 }
