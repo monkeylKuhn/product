@@ -20,5 +20,20 @@ CREATE TABLE `dressproduct` (
   `pricesIncludeVat` varchar(255) DEFAULT NULL,
   `productLastUpdated` varchar(255) DEFAULT NULL,
   `photos` varchar(2550) DEFAULT NULL,
+  `createTime` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updateTime` datetime  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1823 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `dressskusize` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productID` varchar(255) NOT NULL,
+  `size` varchar(255) DEFAULT NULL,
+  `stock` varchar(255) DEFAULT NULL,
+  `retailPrice` varchar(255) DEFAULT NULL,
+  `price` varchar(255) DEFAULT NULL,
+  `createTime` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updateTime` datetime  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
