@@ -10,9 +10,9 @@ public interface DressSkuMapper {
 
      @Insert({
          "<script>",
-         "INSERT INTO DressSku(spuId,size,stock,retailPrice,price,createTime)  ",
+         "INSERT INTO dressskusize(productID,size,stock,retailPrice,price,createTime)  ",
          "<foreach collection='list' item='item' open='VALUES' close='' separator=','>", 
-         "(#{item.spuId},#{item.size},#{item.stock},#{item.retailPrice},#{item.price},#{item.createTime})",
+         "(#{item.productID},#{item.size},#{item.stock},#{item.retailPrice},#{item.price},#{item.createTime})",
          "</foreach>", 
          "</script>"
      })

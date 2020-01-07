@@ -51,7 +51,7 @@ public class TestTask {
 					dressProductMapper.insert(dressProduct);
 					List<DressSkuSize> sizes = dressProduct.getSizes();
 					for (DressSkuSize dressSkuSize : sizes) {
-						dressSkuSize.setSpuId(dressProduct.getProductID());
+						dressSkuSize.setProductID(dressProduct.getProductID());
 						dressSkuSize.setCreateTime(date);
 					}
 					dressSkuMapper.batchInsert(sizes);

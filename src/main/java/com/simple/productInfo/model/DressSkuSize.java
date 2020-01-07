@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class DressSkuSize {
 	
-	private String spuId;
+	private String productID;
 	
 	private String size;
 	
