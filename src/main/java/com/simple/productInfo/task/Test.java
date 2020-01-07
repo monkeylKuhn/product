@@ -30,7 +30,7 @@ public class Test {
 //		} catch (Exception e) {
 //			System.out.println(e.getMessage());
 //		}
-		String url = "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/products?channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
+		String url = "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/stocks?channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
 		HashMap<String, String> head = new HashMap<String,String>();
 		head.put("Ocp-Apim-Subscription-Key", "107b04efec074c6f8f8abed90d224802");
 		try {

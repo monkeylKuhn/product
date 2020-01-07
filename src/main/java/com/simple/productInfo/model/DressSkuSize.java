@@ -6,6 +6,8 @@ import lombok.Data;
 
 @Data
 public class DressSkuSize {
+    
+    private Long id;
 	
 	private String productID;
 	
@@ -18,4 +20,6 @@ public class DressSkuSize {
 	private String price;
 	
 	private Date createTime;
+	
+	private int status;
 }
