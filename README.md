@@ -37,3 +37,29 @@ CREATE TABLE `dressskusize` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `order` (
+  `id` int(11) NOT NULL,
+  `orderNo` varchar(255) NOT NULL,
+  `submitTime` datetime DEFAULT NULL,
+  `supplierName` varchar(255) DEFAULT NULL,
+  `sku` varchar(255) DEFAULT NULL,
+  `artNo` varchar(255) DEFAULT NULL,
+  `brand` varchar(255) DEFAULT NULL,
+  `size` varchar(255) DEFAULT NULL,
+  `color` varchar(255) DEFAULT NULL,
+  `season` varchar(255) DEFAULT NULL,
+  `price` varchar(255) DEFAULT NULL,
+  `retailPrice` varchar(255) DEFAULT NULL,
+  `orderStatus` tinyint(4) DEFAULT NULL,
+  `supplierDeliveryStatus` tinyint(4) DEFAULT NULL,
+  `supplierDeliveryNo` varchar(255) DEFAULT NULL,
+  `supplierBarCode` varchar(255) DEFAULT NULL,
+  `supplierTime` datetime DEFAULT NULL,
+  `warehouseBarCode` varchar(255) DEFAULT NULL,
+  `quality` varchar(255) DEFAULT NULL,
+  `warehouseStatus` tinyint(4) DEFAULT NULL,
+  `warehouseDeliveryNo` varchar(255) DEFAULT NULL,
+  `warehouseTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

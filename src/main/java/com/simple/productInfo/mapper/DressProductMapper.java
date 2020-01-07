@@ -9,20 +9,6 @@ import com.simple.productInfo.model.DressProduct;
 
 public interface DressProductMapper {
 
-     @Select({
-         "<script>",
-         
-         "INSERT INTO DressProduct(productID,clientProductID,spu,sku)  ",
-//         "<foreach collection='list' item='dressProduct' open='VALUES' close='' separator=','>", 
-//         "values(#{dressProduct.productID},#{dressProduct.clientProductID},#{dressProduct.spu},#{dressProduct.sku})",
-
-         "values(#{productID},#{clientProductID},#{spu},#{sku})",
-//         "</foreach>", 
-         
-         "</script>"
-     })
-//     @Options(useGeneratedKeys = true, keyProperty = "id")
-     int insertProduct(DressProduct list);
 
      @Select({
        "SELECT COUNT(1) FROM DressProduct WHERE productID = #{productId}"
@@ -31,7 +17,27 @@ public interface DressProductMapper {
      
      
      @Update({
-       "UPDATE  DressProduct SET sku = '123' WHERE productID = #{productID}"
+       "UPDATE  DressProduct SET ",
+       "    productID = #{productID},",
+       "    clientProductID = #{clientProductID},",
+       "    spu = #{spu},",
+       "    sku = #{sku}, ",
+       "    brand = #{sku}, ",
+       "    name = #{name}, ",
+       "    description = #{description}, ",
+       "    genre = #{genre}, ",
+       "    type = #{type}, ",
+       "    category = #{category}, ",
+       "    season = #{season}, ",
+       "    isCarryOver = #{isCarryOver}, ",
+       "    color = #{color}, ",
+       "    retailPrice = #{retailPrice}, ",
+       "    price = #{price}, ",
+       "    pricesIncludeVat = #{pricesIncludeVat}, ",
+       "    productLastUpdated = #{productLastUpdated}, ",
+       "    photos = #{photos}, ",
+       "    updateTime = now() ",
+       "WHERE productID = #{productID}"
      })
      Integer updateByProductID(DressProduct dressProduct);     
      
