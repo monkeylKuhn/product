@@ -15,8 +15,8 @@ import com.simple.productInfo.DTO.WarehouseOrderDTO;
 import com.simple.productInfo.controller.param.CreateOrderParam;
 import com.simple.productInfo.controller.param.FindOrderListParam;
 import com.simple.productInfo.controller.param.FindSupplierOrderListParam;
-import com.simple.productInfo.mapper.DressProductMapper;
 import com.simple.productInfo.mapper.OrderMapper;
+import com.simple.productInfo.task.TestStockTask;
 import com.simple.productInfo.task.TestTask;
 import com.simple.productInfo.utils.PageInfo;
 
@@ -25,19 +25,25 @@ import com.simple.productInfo.utils.PageInfo;
  public class ProductController {
 
     @Autowired
-    private DressProductMapper dressProductMapper;
-    
-    @Autowired
     private OrderMapper orderMapper;
     
     @Autowired
     TestTask testTask;
+    @Autowired
+    TestStockTask testStockTask;
     
-    @GetMapping("/")
-    public Object queryById(){
+    @GetMapping("/spu")
+    public Object fetchSpu(){
     	testTask.fetchProduct();
         return true;
     }
+    
+    @GetMapping("/sku")
+    public Object fetchSku(){
+    	testStockTask.fetchStock();
+        return true;
+    }
+    
     
     @PostMapping("/order")
     public String createOrder(@RequestBody CreateOrderParam createOrderParam) {

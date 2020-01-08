@@ -37,7 +37,14 @@ public interface DressSkuMapper {
          "UPDATE dressskusize SET status = #{status}",
          "</script>"
      })
-     int updateStatus(int status);
+     int updateStatus(@Param("status")int status);
+     
+     @Update({
+         "<script>",
+         "UPDATE dressskusize SET stock = 0, status = 0 WHERE status = #{status}",
+         "</script>"
+     })
+     int updateStatusByStock(@Param("status")int status);
      
      // 将所有数据设置为更新中状态
      @Update({
@@ -45,7 +52,7 @@ public interface DressSkuMapper {
          "UPDATE dressskusize SET status = #{status} WHERE id = #{id}",
          "</script>"
      })
-     int updateStatusById(int status,Long id);
+     int updateStatusById(@Param("status")int status,@Param("id")Long id);
      
      
      @Update({
@@ -65,7 +72,7 @@ public interface DressSkuMapper {
      @Select({
          "SELECT id,productID,size,stock,retailPrice,price FROM dressskusize WHERE productID = #{productId} and size = #{size}"
        })
-     DressSkuSize selectByProductIDandSize(String productId,String size);
+     DressSkuSize selectByProductIDandSize(@Param("productId")String productId,@Param("size")String size);
      
      @Select({
              "<script>",
@@ -73,19 +80,19 @@ public interface DressSkuMapper {
              "productID,size,stock",
              " FROM",
              "   dressskusize",
-             " WHERE",
-             "   purchaseOrderId=#{purchaseOrderId}",
-             " and deleted=0",
-             "<if test=\"items!=null and items.size()>0 \">",
-             " and profitAndLossStatus in",
-             "<foreach item=\"item\" index=\"index\" collection=\"items\" open=\"(\" separator=\",\" close=\")\">",
+             "<where>",
+             " <if test=\" stock != null \">", " stock > #{stock},", "</if>",             
+             "<if test=\"sList!=null and sList.size()>0 \">",
+             " and status in",
+             "<foreach item=\"item\" index=\"index\" collection=\"sList\" open=\"(\" separator=\",\" close=\")\">",
              "   #{item}",
              "</foreach>",
              "</if>",
+             "</where>",
              "</script>"
 
      })
-     List<DressSkuSize> findPurchaseOrderItemProfitAndLossList(@Param("stock") Long purchaseOrderId, @Param("sList") Set<Integer> statusList);
+     List<DressSkuSize> selectByStatusAndStock(@Param("stock") String stock, @Param("sList") Set<Integer> statusList);
 
 
 }

@@ -25,9 +25,9 @@ public class TestTask {
 	@Autowired
 	DressSkuMapper dressSkuMapper;
 
-	@Scheduled(cron = "0 0/2 * * * ?")
+//	@Scheduled(cron = "0 0/2 * * * ?")
+	@Scheduled(fixedDelay=1000*60*1)
 	public void fetchProduct() {
-		int total = 0;
 		String url = "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/products?channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
 		HashMap<String, String> head = new HashMap<String,String>();
 		head.put("Ocp-Apim-Subscription-Key", "107b04efec074c6f8f8abed90d224802");
@@ -41,20 +41,23 @@ public class TestTask {
 			}
 			Date date = new Date();
 			for (DressProduct dressProduct : dressProductList) {
-				System.out.println(total++);
-				Integer count = dressProductMapper.count(dressProduct.getProductID());
-				if (count == 1) {
-					// 更新数据, 此处不处理sku
-					dressProductMapper.updateByProductID(dressProduct);
-				}else{
-					// 插入
-					dressProductMapper.insert(dressProduct);
-					List<DressSkuSize> sizes = dressProduct.getSizes();
-					for (DressSkuSize dressSkuSize : sizes) {
-						dressSkuSize.setProductID(dressProduct.getProductID());
-						dressSkuSize.setCreateTime(date);
+				try {
+					Integer count = dressProductMapper.count(dressProduct.getProductID());
+					if (count == 1) {
+						// 更新数据, 此处不处理sku
+						dressProductMapper.updateByProductID(dressProduct);
+					}else{
+						// 插入
+						dressProductMapper.insert(dressProduct);
+						List<DressSkuSize> sizes = dressProduct.getSizes();
+						for (DressSkuSize dressSkuSize : sizes) {
+							dressSkuSize.setProductID(dressProduct.getProductID());
+							dressSkuSize.setCreateTime(date);
+						}
+						dressSkuMapper.batchInsert(sizes);
 					}
-					dressSkuMapper.batchInsert(sizes);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 			

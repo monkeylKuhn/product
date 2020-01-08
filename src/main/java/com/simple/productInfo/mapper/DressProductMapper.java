@@ -35,8 +35,7 @@ public interface DressProductMapper {
        "    price = #{price}, ",
        "    pricesIncludeVat = #{pricesIncludeVat}, ",
        "    productLastUpdated = #{productLastUpdated}, ",
-       "    photos = #{photos}, ",
-       "    updateTime = now() ",
+       "    photos = #{photos} ",
        "WHERE productID = #{productID}"
      })
      Integer updateByProductID(DressProduct dressProduct);     

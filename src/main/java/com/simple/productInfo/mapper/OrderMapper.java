@@ -131,6 +131,7 @@ public interface OrderMapper {
          "  warehouseTime = #{warehouseTime},",
          "</if>",
          "WHERE id = #{id}",
+         "</script>",
      })
      Integer UpdateOrder(OrderDTO order);
 }
