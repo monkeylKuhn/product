@@ -22,7 +22,7 @@ public interface DressProductMapper {
        "    clientProductID = #{clientProductID},",
        "    spu = #{spu},",
        "    sku = #{sku}, ",
-       "    brand = #{sku}, ",
+       "    brand = #{brand}, ",
        "    name = #{name}, ",
        "    description = #{description}, ",
        "    genre = #{genre}, ",
