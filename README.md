@@ -32,11 +32,13 @@ CREATE TABLE `dressskusize` (
   `stock` varchar(255) DEFAULT NULL,
   `retailPrice` varchar(255) DEFAULT NULL,
   `price` varchar(255) DEFAULT NULL,
-  `status` int(2) DEFAULT NULL COMMENT '更新处理状态，0待更新，1更新中 ，2 此次库存被更新，3 此次价格被更新，4 库存价格均有更新',
+  `status` int(2) DEFAULT 0 COMMENT '更新处理状态，0待更新，1更新中 ，2 此次库存被更新，3 此次价格被更新，4 库存价格均有更新',
   `createTime` datetime DEFAULT CURRENT_TIMESTAMP,
   `updateTime` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1573 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `p+s` (`productID`,`size`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1879 DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE `order` (
   `id` int(11) NOT NULL,

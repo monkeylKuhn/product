@@ -26,7 +26,7 @@ public class TestTask {
 	DressSkuMapper dressSkuMapper;
 
 //	@Scheduled(cron = "0 0/2 * * * ?")
-	@Scheduled(fixedDelay=1000*60*1)
+	@Scheduled(fixedDelay=1000*60*10)
 	public void fetchProduct() {
 		String url = "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/products?channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
 		HashMap<String, String> head = new HashMap<String,String>();
