@@ -6,7 +6,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.security.auth.Subject;
+
 import org.apache.http.client.utils.DateUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.simple.productInfo.DTO.OrderDTO;
@@ -29,6 +33,8 @@ import com.simple.productInfo.mapper.OrderMapper;
 import com.simple.productInfo.model.DressProduct;
 import com.simple.productInfo.model.DressResult;
 import com.simple.productInfo.model.DressSkuSize;
+import com.simple.productInfo.model.ShippingAddress;
+import com.simple.productInfo.model.SubmitOrder;
 import com.simple.productInfo.task.HttpClientUtil;
 import com.simple.productInfo.task.TestStockTask;
 import com.simple.productInfo.task.TestTask;
@@ -65,13 +71,40 @@ public class ProductController {
         // 获取商品信息 验证库存 价格是否发生改变
         DressProduct dressProduct = getDressProductBySku(createOrderParam.getSku());
         if(chechSku(dressProduct,createOrderParam)) {
-            
+            return "商品信息需要更新";
         }
         // 调用api接口锁商品
-
+        submitOrder(createOrderParam);
+        
+        
         Integer flag = orderMapper.insert(createOrderParam);
 
         return null;
+    }
+
+    private void submitOrder(CreateOrderParam param) {
+        SubmitOrder submit = new SubmitOrder();
+        submit.setChannelOrderID(param.getOrderNo());
+        submit.setChannelOrderCreated(LocalDateTime.now().toString());
+        submit.setProductID(param.getSku());
+        submit.setSize(param.getSize());
+        submit.setSoldUnits(1);
+        //提交的价格 TODO
+//        submit.setUnitSellingPrice(unitSellingPrice);
+        ShippingAddress shippingAddress = new ShippingAddress();
+        BeanUtils.copyProperties(param, shippingAddress);
+        submit.setShippingAddress(shippingAddress);
+        
+        String url = "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/orders/items?channelKey=channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
+        HashMap<String, String> head = new HashMap<String, String>();
+        head.put("Ocp-Apim-Subscription-Key", "107b04efec074c6f8f8abed90d224802");
+        head.put("Content-Type", JSON.toJSONString(submit));
+        try {
+            String sendGetRequest = HttpClientUtil.sendGetRequest(url, 25000, head);
+            //DressResult result = JSONObject.parseObject(sendGetRequest, DressResult.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -89,11 +122,9 @@ public class ProductController {
             if(size.getSize().equals(createOrderParam.getSize()))
                 dressSkuSize = size;
         }
-//        if(dressSkuSize == null || dressSkuSize.getStock().) {
-//            return true;
-//        }
-        
-        
+        if(dressSkuSize == null || Integer.parseInt(dressSkuSize.getStock()) == 0 ) {
+            return true;
+        }
          return false;
     }
 
@@ -184,4 +215,5 @@ public class ProductController {
         }
         return null;
     }
+    
 }
