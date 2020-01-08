@@ -23,7 +23,7 @@ public class TestStockTask {
 	DressSkuMapper dressSkuMapper;
 
 //	@Scheduled(cron = "0 0/20 * * * ?")
-	@Scheduled(fixedDelay=1000*60*1)
+	@Scheduled(fixedDelay=1000*60*5)
 	public void fetchStock() {
 		String url = "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/stocks?channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
 		HashMap<String, String> head = new HashMap<String,String>();
@@ -94,7 +94,7 @@ public class TestStockTask {
 			// 查询库存要更新为0的    1 and stock>0
 			Set<Integer> statusList3 = new HashSet<>();
 			statusList3.add(1);
-			List<DressSkuSize> list3 = dressSkuMapper.selectByStatusAndStock(null, statusList3);
+			List<DressSkuSize> list3 = dressSkuMapper.selectByStatusAndStock("0", statusList3);
 			
 			// 更新库存为0
 			dressSkuMapper.updateStatusByStock(1);
