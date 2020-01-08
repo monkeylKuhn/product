@@ -2,6 +2,8 @@ package com.simple.productInfo.DTO;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 /**
@@ -16,6 +18,7 @@ public class OrderDTO {
 
     private String orderNo;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private LocalDateTime submitTime;
 
     private String supplierName;
@@ -44,6 +47,7 @@ public class OrderDTO {
     
     private String supplierBarCode;
     
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private LocalDateTime supplierTime;
     
     private String warehouseBarCode;
@@ -53,6 +57,7 @@ public class OrderDTO {
     private Integer warehouseStatus;
     
     private String warehouseDeliveryNo;
-    
-    private String warehouseTime;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private LocalDateTime warehouseTime;
 }
