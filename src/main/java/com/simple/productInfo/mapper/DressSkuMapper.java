@@ -81,7 +81,7 @@ public interface DressSkuMapper {
              " FROM",
              "   dressskusize",
              "<where>",
-             " <if test=\" stock != null \">", " stock > #{stock},", "</if>",             
+             " <if test=\" stock != null \">", " stock > #{stock}", "</if>",             
              "<if test=\"sList!=null and sList.size()>0 \">",
              " and status in",
              "<foreach item=\"item\" index=\"index\" collection=\"sList\" open=\"(\" separator=\",\" close=\")\">",
