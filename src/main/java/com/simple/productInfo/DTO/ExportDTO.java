@@ -75,25 +75,7 @@ public class ExportDTO {
     @Excel(name = "url3")
     private String url3;
 
-    private String URL;
-    private String[] str = this.URL.split("\\^");
+    private String photos;
 
-    public String getUrl1() {
-        if (str[0].isEmpty())
-            return null;
-        return str[0];
-    }
-
-    public String getUrl2() {
-        if (str[1].isEmpty())
-            return null;
-        return str[1];
-    }
-
-    public String getUrl3() {
-        if (str[2].isEmpty())
-            return null;
-        return str[2];
-    }
 
 }

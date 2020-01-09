@@ -1,6 +1,7 @@
 package com.simple.productInfo.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,8 +68,25 @@ public class ProductController {
 
     @GetMapping("/export")
     public void export(HttpServletResponse response) {
+        System.out.println("==================");
         List<ExportDTO> skuExport = dressProductMapper.export();
-        EasyPoiUtils.exportExcel(skuExport, null, null, ExportDTO.class, "商品信息.xls",
+        for (ExportDTO exportDTO : skuExport) {
+            if(exportDTO.getPhotos()!=null && !exportDTO.getPhotos().isEmpty()) {
+                String[] urls = exportDTO.getPhotos().split("\\^");
+                if(urls.length>=1) {
+                    exportDTO.setUrl1(urls[0]);
+                    if(urls.length>=2) {
+                        exportDTO.setUrl2(urls[1]);
+                        if(urls.length==3) {
+                            exportDTO.setUrl3(urls[2]);
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("==================");
+        EasyPoiUtils.exportExcel(skuExport, "商品信息", "商品信息", ExportDTO.class, "商品信息.xls",
             response);
     }
 
