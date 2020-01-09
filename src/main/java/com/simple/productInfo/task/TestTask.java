@@ -35,7 +35,7 @@ public class TestTask {
 		HashMap<String, String> head = new HashMap<String,String>();
 		head.put("Ocp-Apim-Subscription-Key", "107b04efec074c6f8f8abed90d224802");
 		try {
-			String sendGetRequest = HttpClientUtil.sendGetRequest(url, 25000, head);
+			String sendGetRequest = HttpClientUtil.sendGetRequest(url, 600000, head);
 			DressResult result = JSONObject.parseObject(sendGetRequest, DressResult.class);
 			List<DressProduct> dressProductList = result.getData();
 				

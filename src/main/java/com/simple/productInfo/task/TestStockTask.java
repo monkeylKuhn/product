@@ -7,33 +7,22 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.simple.productInfo.config.MailProperties;
 import com.simple.productInfo.mapper.DressSkuMapper;
 import com.simple.productInfo.model.DressSkuSize;
 import com.simple.productInfo.model.DressStock;
 import com.simple.productInfo.model.DressStockResult;
+import com.simple.productInfo.utils.EmailUtils;
 
 @Component
 public class TestStockTask {
 	
 	@Autowired
 	DressSkuMapper dressSkuMapper;
-	
-    @Autowired
-    MailProperties mailProperties;
-
-    private SimpleMailMessage mailMessage = new SimpleMailMessage();
-    
-    @Autowired
-    JavaMailSender javaMailSender;
-
 	
 //	@Scheduled(cron = "0 0/20 * * * ?")
 	@Scheduled(fixedDelay=1000*60*5)
@@ -111,24 +100,15 @@ public class TestStockTask {
 			List<DressSkuSize> list3 = dressSkuMapper.selectByStatusAndStock("0", statusList3);
 			
 			if (!CollectionUtils.isEmpty(list)||!CollectionUtils.isEmpty(list2)||!CollectionUtils.isEmpty(list3)) {
-		        
-			    mailMessage.setFrom(mailProperties.getFrom());
-		        mailMessage.setTo(mailProperties.getTo());
-	            
+			    
 		        if(!CollectionUtils.isEmpty(list)) {
-		            mailMessage.setSubject("测试发送邮件--库存有更新");
-		            mailMessage.setText(JSONObject.toJSONString(list));
-		            javaMailSender.send(mailMessage);
+		            EmailUtils.sendEmail(JSONObject.toJSONString(list), "测试发送邮件--库存有更新");
 	            }
 		        if(!CollectionUtils.isEmpty(list2)) {
-		            mailMessage.setSubject("测试发送邮件--新入库数据");
-		            mailMessage.setText(JSONObject.toJSONString(list2));
-		            javaMailSender.send(mailMessage);
+		            EmailUtils.sendEmail(JSONObject.toJSONString(list2), "测试发送邮件--新入库数据");
 		        }
 		        if(!CollectionUtils.isEmpty(list3)) {
-		            mailMessage.setSubject("测试发送邮件--库存更新为0");
-		            mailMessage.setText(JSONObject.toJSONString(list3));
-		            javaMailSender.send(mailMessage);
+		            EmailUtils.sendEmail(JSONObject.toJSONString(list3), "测试发送邮件--库存更新为0");
 		        }
 		        
 			    
@@ -140,9 +120,7 @@ public class TestStockTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	      System.err.println(new Date().toLocaleString()+"结束执行库存更新"+System.currentTimeMillis());
-
 	}
 	
 }
