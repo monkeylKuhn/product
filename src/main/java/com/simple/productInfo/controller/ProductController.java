@@ -1,17 +1,11 @@
 package com.simple.productInfo.controller;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.security.auth.Subject;
-
-import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.simple.productInfo.DTO.OrderDTO;
 import com.simple.productInfo.DTO.SupplierOrderDTO;
 import com.simple.productInfo.DTO.WarehouseOrderDTO;
@@ -38,6 +31,7 @@ import com.simple.productInfo.model.SubmitOrder;
 import com.simple.productInfo.task.HttpClientUtil;
 import com.simple.productInfo.task.TestStockTask;
 import com.simple.productInfo.task.TestTask;
+import com.simple.productInfo.utils.EmailUtils;
 import com.simple.productInfo.utils.PageInfo;
 
 @RestController
@@ -51,6 +45,12 @@ public class ProductController {
     TestTask testTask;
     @Autowired
     TestStockTask testStockTask;
+    
+    @GetMapping("/mail")
+    public String mail() {
+        EmailUtils.sendEmail("hello f**k", "最新测试");
+        return "success";
+    }
 
     @GetMapping("/spu")
     public Object fetchSpu() {
