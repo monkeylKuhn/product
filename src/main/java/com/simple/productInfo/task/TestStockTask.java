@@ -1,16 +1,20 @@
 package com.simple.productInfo.task;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.simple.productInfo.config.MailProperties;
 import com.simple.productInfo.mapper.DressSkuMapper;
 import com.simple.productInfo.model.DressSkuSize;
 import com.simple.productInfo.model.DressStock;
@@ -21,15 +25,25 @@ public class TestStockTask {
 	
 	@Autowired
 	DressSkuMapper dressSkuMapper;
+	
+    @Autowired
+    MailProperties mailProperties;
 
+    private SimpleMailMessage mailMessage = new SimpleMailMessage();
+    
+    @Autowired
+    JavaMailSender javaMailSender;
+
+	
 //	@Scheduled(cron = "0 0/20 * * * ?")
 	@Scheduled(fixedDelay=1000*60*5)
 	public void fetchStock() {
+	    System.err.println(new Date().toLocaleString()+"开始执行库存更新"+System.currentTimeMillis());
 		String url = "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/stocks?channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
 		HashMap<String, String> head = new HashMap<String,String>();
 		head.put("Ocp-Apim-Subscription-Key", "107b04efec074c6f8f8abed90d224802");
 		try {
-			String sendGetRequest = HttpClientUtil.sendGetRequest(url, 25000, head);
+			String sendGetRequest = HttpClientUtil.sendGetRequest(url, 600000, head);
 			DressStockResult result = JSONObject.parseObject(sendGetRequest, DressStockResult.class);
 			sendGetRequest = null;
 			List<DressStock> dressProductList = result.getData();
@@ -96,6 +110,30 @@ public class TestStockTask {
 			statusList3.add(1);
 			List<DressSkuSize> list3 = dressSkuMapper.selectByStatusAndStock("0", statusList3);
 			
+			if (!CollectionUtils.isEmpty(list)||!CollectionUtils.isEmpty(list2)||!CollectionUtils.isEmpty(list3)) {
+		        
+			    mailMessage.setFrom(mailProperties.getFrom());
+		        mailMessage.setTo(mailProperties.getTo());
+	            
+		        if(!CollectionUtils.isEmpty(list)) {
+		            mailMessage.setSubject("测试发送邮件--库存有更新");
+		            mailMessage.setText(JSONObject.toJSONString(list));
+		            javaMailSender.send(mailMessage);
+	            }
+		        if(!CollectionUtils.isEmpty(list2)) {
+		            mailMessage.setSubject("测试发送邮件--新入库数据");
+		            mailMessage.setText(JSONObject.toJSONString(list2));
+		            javaMailSender.send(mailMessage);
+		        }
+		        if(!CollectionUtils.isEmpty(list3)) {
+		            mailMessage.setSubject("测试发送邮件--库存更新为0");
+		            mailMessage.setText(JSONObject.toJSONString(list3));
+		            javaMailSender.send(mailMessage);
+		        }
+		        
+			    
+            }
+			
 			// 更新库存为0
 			dressSkuMapper.updateStatusByStock(1);
 			
@@ -103,7 +141,8 @@ public class TestStockTask {
 			e.printStackTrace();
 		}
 		
-		
+	      System.err.println(new Date().toLocaleString()+"结束执行库存更新"+System.currentTimeMillis());
+
 	}
 	
 }
