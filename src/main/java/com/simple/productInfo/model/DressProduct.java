@@ -41,6 +41,10 @@ public class DressProduct {
 	
 	private String productLastUpdated;
 	
+	private String madeIn;
+	
+	private String composition;
+	
 	private List<DressSkuSize> sizes;
 	
 	private List<String> photos;
