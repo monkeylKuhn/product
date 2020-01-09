@@ -18,19 +18,13 @@ public interface DressProductMapper {
      
      @Update({
        "UPDATE  DressProduct SET ",
-       "    productID = #{productID},",
-       "    clientProductID = #{clientProductID},",
        "    spu = #{spu},",
        "    sku = #{sku}, ",
        "    brand = #{brand}, ",
        "    name = #{name}, ",
        "    description = #{description}, ",
-       "    genre = #{genre}, ",
-       "    type = #{type}, ",
-       "    category = #{category}, ",
        "    season = #{season}, ",
        "    isCarryOver = #{isCarryOver}, ",
-       "    color = #{color}, ",
        "    retailPrice = #{retailPrice}, ",
        "    price = #{price}, ",
        "    pricesIncludeVat = #{pricesIncludeVat}, ",
@@ -43,9 +37,9 @@ public interface DressProductMapper {
      @Insert({
          "<script>",
          "INSERT INTO DressProduct(productID,clientProductID,spu,sku,brand,name,description,genre,type,",
-         "category,season,isCarryOver,color,retailPrice,price,pricesIncludeVat,productLastUpdated,photos)  ",
+         "category,season,isCarryOver,color,retailPrice,price,pricesIncludeVat,productLastUpdated,photos,madeIn,composition)  ",
          "values(#{productID},#{clientProductID},#{spu},#{sku},#{brand},#{name},#{description},#{genre},#{type},",
-         "#{category},#{season},#{isCarryOver},#{color},#{retailPrice},#{price},#{pricesIncludeVat},#{productLastUpdated},#{photos})",
+         "#{category},#{season},#{isCarryOver},#{color},#{retailPrice},#{price},#{pricesIncludeVat},#{productLastUpdated},#{photos},#{madeIn},#{composition})",
          "</script>"
      })
      @Options(useGeneratedKeys = true, keyProperty = "id")
