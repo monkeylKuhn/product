@@ -3,6 +3,8 @@
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.simple.productInfo.DTO.OrderDTO;
 import com.simple.productInfo.DTO.SupplierOrderDTO;
 import com.simple.productInfo.DTO.WarehouseOrderDTO;
+import com.simple.productInfo.config.MailProperties;
 import com.simple.productInfo.controller.param.CreateOrderParam;
 import com.simple.productInfo.controller.param.FindOrderListParam;
 import com.simple.productInfo.controller.param.FindSupplierOrderListParam;
@@ -31,6 +34,26 @@ import com.simple.productInfo.utils.PageInfo;
     TestTask testTask;
     @Autowired
     TestStockTask testStockTask;
+    @Autowired
+    MailProperties mailProperties;
+    @Autowired
+    JavaMailSender javaMailSender;
+    @GetMapping("/mail")
+    public Object sendMail(){
+        
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom(mailProperties.getFrom());
+        mailMessage.setTo(mailProperties.getTo());
+     
+        mailMessage.setSubject("测试发送邮件");
+        mailMessage.setText("hello world");
+     
+        javaMailSender.send(mailMessage);
+        
+        
+        return true;
+    }
+    
     
     @GetMapping("/spu")
     public Object fetchSpu(){

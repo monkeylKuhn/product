@@ -9,7 +9,7 @@ spring:
     platform: mysql
     url: jdbc:mysql://localhost:3306/product?useUnicode=true&characterEncoding=utf8
     username: root
-    password: root
+    password: 
     initialSize: 5
     minIdle: 5
     maxActive: 20
@@ -22,6 +22,13 @@ spring:
     testOnReturn: false
     filters: stat,wall,log4j
     logSlowSql: true
+  mail:
+    host: smtp.163.com
+    username: 18514587664@163.com
+    password: sqm20200108
+mail:
+  from: 18514587664@163.com
+  to: 1615325074@qq.com
     
 #showSql
 logging:
@@ -29,7 +36,7 @@ logging:
     com:
       simple:
          productInfo:
-           mapper : debug
+           mapper : INFO
  
 
     
