@@ -74,6 +74,12 @@ public class ExportDTO {
     
     @Excel(name = "url3")
     private String url3;
+    
+    @Excel(name = "url4")
+    private String url4;
+
+    @Excel(name = "url5")
+    private String url5;
 
     private String photos;
 

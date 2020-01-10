@@ -32,8 +32,6 @@ import lombok.Data;
     
     private String price;
     
-    private String retailPrice;
-    
     private String orderStatus;
     
     //图片待定

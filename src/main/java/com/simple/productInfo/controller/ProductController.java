@@ -1,12 +1,20 @@
 package com.simple.productInfo.controller;
 
+import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +39,7 @@ import com.simple.productInfo.mapper.OrderMapper;
 import com.simple.productInfo.model.DressProduct;
 import com.simple.productInfo.model.DressResult;
 import com.simple.productInfo.model.DressSkuSize;
+import com.simple.productInfo.model.OrderReturn;
 import com.simple.productInfo.model.ShippingAddress;
 import com.simple.productInfo.model.SubmitOrder;
 import com.simple.productInfo.task.HttpClientUtil;
@@ -45,7 +54,7 @@ public class ProductController {
 
     @Autowired
     private OrderMapper orderMapper;
-    
+
     @Autowired
     private DressProductMapper dressProductMapper;
 
@@ -68,93 +77,46 @@ public class ProductController {
 
     @GetMapping("/export")
     public void export(HttpServletResponse response) {
-        System.out.println("==================");
         List<ExportDTO> skuExport = dressProductMapper.export();
         for (ExportDTO exportDTO : skuExport) {
-            if(exportDTO.getPhotos()!=null && !exportDTO.getPhotos().isEmpty()) {
+            if (exportDTO.getPhotos() != null && !exportDTO.getPhotos().isEmpty()) {
                 String[] urls = exportDTO.getPhotos().split("\\^");
-                if(urls.length>=1) {
+                if (urls.length >= 1) {
                     exportDTO.setUrl1(urls[0]);
-                    if(urls.length>=2) {
+                    if (urls.length >= 2) {
                         exportDTO.setUrl2(urls[1]);
-                        if(urls.length==3) {
-                            exportDTO.setUrl3(urls[2]);
+                        if (urls.length >= 3) {
+                            exportDTO.setUrl4(urls[2]);
+                            if (urls.length >= 4) {
+                                exportDTO.setUrl3(urls[3]);
+                                if (urls.length >= 5) {
+                                    exportDTO.setUrl5(urls[4]);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-
-        System.out.println("==================");
-        EasyPoiUtils.exportExcel(skuExport, "商品信息", "商品信息", ExportDTO.class, "商品信息.xls",
-            response);
+        EasyPoiUtils.exportExcel(skuExport, "商品信息", "商品信息", ExportDTO.class, "商品信息.xls", response);
     }
 
     @PostMapping("/order")
     public String createOrder(@RequestBody CreateOrderParam createOrderParam) {
-        // 检验 TODO
-
         // 获取商品信息 验证库存 价格是否发生改变
         DressProduct dressProduct = getDressProductBySku(createOrderParam.getSku());
         if (chechSku(dressProduct, createOrderParam)) {
             return "商品信息需要更新";
         }
         // 调用api接口锁商品
-        submitOrder(createOrderParam);
-
+        String str = submitOrder(createOrderParam);
+        if (!str.isEmpty()) {
+            return str;
+        }
         Integer flag = orderMapper.insert(createOrderParam);
-
-        return null;
+        return flag.toString();
     }
-
-    private void submitOrder(CreateOrderParam param) {
-        SubmitOrder submit = new SubmitOrder();
-        submit.setChannelOrderID(param.getOrderNo());
-        submit.setChannelOrderCreated(LocalDateTime.now().toString());
-        submit.setProductID(param.getSku());
-        submit.setSize(param.getSize());
-        submit.setSoldUnits(1);
-        // 提交的价格 TODO
-        // submit.setUnitSellingPrice(unitSellingPrice);
-        ShippingAddress shippingAddress = new ShippingAddress();
-        BeanUtils.copyProperties(param, shippingAddress);
-        submit.setShippingAddress(shippingAddress);
-
-        String url =
-            "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/orders/items?channelKey=channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e";
-        HashMap<String, String> head = new HashMap<String, String>();
-        head.put("Ocp-Apim-Subscription-Key", "107b04efec074c6f8f8abed90d224802");
-        head.put("Content-Type", JSON.toJSONString(submit));
-        try {
-            String sendGetRequest = HttpClientUtil.sendGetRequest(url, 25000, head);
-            // DressResult result = JSONObject.parseObject(sendGetRequest, DressResult.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 校验商品
-     * 
-     * @param dressProduct
-     * @param dressProduct2
-     * @return
-     */
-    private boolean chechSku(DressProduct dressProduct, CreateOrderParam createOrderParam) {
-        if (!dressProduct.getPrice().equals(createOrderParam.getPrice())
-            || !dressProduct.getRetailPrice().equals(createOrderParam.getRetailPrice())) {
-            return true;
-        }
-        DressSkuSize dressSkuSize = new DressSkuSize();
-        for (DressSkuSize size : dressProduct.getSizes()) {
-            if (size.getSize().equals(createOrderParam.getSize()))
-                dressSkuSize = size;
-        }
-        if (dressSkuSize == null || Integer.parseInt(dressSkuSize.getStock()) == 0) {
-            return true;
-        }
-        return false;
-    }
+    
 
     @PostMapping("/order/list")
     public PageInfo<OrderDTO> findOrderList(@RequestBody FindOrderListParam findOrderListParam) {
@@ -223,6 +185,66 @@ public class ProductController {
         }
         return orderMapper.UpdateOrder(order) > 0;
     }
+
+    private String submitOrder(CreateOrderParam param) {
+        SubmitOrder submit = new SubmitOrder();
+        submit.setChannelOrderID(param.getOrderNo());
+        submit.setChannelOrderCreated(LocalDateTime.now().toString());
+        submit.setProductID(param.getSku());
+        submit.setSize(param.getSize());
+        submit.setSoldUnits(1);
+        // 提交的价格 TODO
+        submit.setUnitSellingPrice(Double.parseDouble(param.getPrice()));
+        ShippingAddress shippingAddress = new ShippingAddress();
+        BeanUtils.copyProperties(param, shippingAddress);
+        submit.setShippingAddress(shippingAddress);
+
+        HttpClient httpclient = HttpClients.createDefault();
+        try {
+            URIBuilder builder = new URIBuilder(
+                "https://api.dresscode.cloud/channels/v2/api/feeds/en/clients/llf/orders/items?channelKey=0198873e-1fde-4783-8719-4f1d0790eb6e");
+            URI uri = builder.build();
+            HttpPost request = new HttpPost(uri);
+            request.setHeader("Content-Type", "application/json");
+            request.setHeader("Ocp-Apim-Subscription-Key", "107b04efec074c6f8f8abed90d224802");
+            // Request body
+            StringEntity reqEntity = new StringEntity(JSON.toJSONString(submit));
+            request.setEntity(reqEntity);
+            HttpResponse response = httpclient.execute(request);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                OrderReturn returnDetail = JSONObject.parseObject(EntityUtils.toString(entity), OrderReturn.class);
+                if (returnDetail.getError() != null)
+                    return returnDetail.getError().getTitel();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "";
+    }
+
+    /**
+     * 校验商品
+     * 
+     * @param dressProduct
+     * @param dressProduct2
+     * @return
+     */
+    private boolean chechSku(DressProduct dressProduct, CreateOrderParam createOrderParam) {
+        if (!dressProduct.getPrice().equals(createOrderParam.getPrice())) {
+            return true;
+        }
+        DressSkuSize dressSkuSize = new DressSkuSize();
+        for (DressSkuSize size : dressProduct.getSizes()) {
+            if (size.getSize().equals(createOrderParam.getSize()))
+                dressSkuSize = size;
+        }
+        if (dressSkuSize == null || Integer.parseInt(dressSkuSize.getStock()) == 0) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * 获取对应商品校验
